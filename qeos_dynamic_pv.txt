@@ -1,0 +1,73 @@
+# oc get pvc
+NAME           STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+logging-es-0   Bound     pvc-6d3b77ec-1135-11e8-a866-fa163e3365eb   10Gi       RWO            standard       2d
+**********************************************************************************************************************
+# oc get pvc logging-es-0 -o yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/cinder
+  creationTimestamp: 2018-02-14T03:16:19Z
+  labels:
+    logging-infra: support
+  name: logging-es-0
+  namespace: logging
+  resourceVersion: "2269"
+  selfLink: /api/v1/namespaces/logging/persistentvolumeclaims/logging-es-0
+  uid: 6d3b77ec-1135-11e8-a866-fa163e3365eb
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+  volumeName: pvc-6d3b77ec-1135-11e8-a866-fa163e3365eb
+status:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  phase: Bound
+**********************************************************************************************************************
+# oc get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS    CLAIM                                   STORAGECLASS   REASON    AGE
+pvc-6d3b77ec-1135-11e8-a866-fa163e3365eb   10Gi       RWO            Delete           Bound     logging/logging-es-0                    standard                 2d
+**********************************************************************************************************************
+# oc get pv pvc-6d3b77ec-1135-11e8-a866-fa163e3365eb -o yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    kubernetes.io/createdby: cinder-dynamic-provisioner
+    pv.kubernetes.io/bound-by-controller: "yes"
+    pv.kubernetes.io/provisioned-by: kubernetes.io/cinder
+  creationTimestamp: 2018-02-14T03:16:20Z
+  labels:
+    failure-domain.beta.kubernetes.io/zone: nova
+  name: pvc-6d3b77ec-1135-11e8-a866-fa163e3365eb
+  resourceVersion: "2267"
+  selfLink: /api/v1/persistentvolumes/pvc-6d3b77ec-1135-11e8-a866-fa163e3365eb
+  uid: 6d7f092f-1135-11e8-a866-fa163e3365eb
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  cinder:
+    fsType: xfs
+    volumeID: 19dd840d-0cbf-4485-89c6-1872278aa02e
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: logging-es-0
+    namespace: logging
+    resourceVersion: "2263"
+    uid: 6d3b77ec-1135-11e8-a866-fa163e3365eb
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: standard
+status:
+  phase: Bound
